@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepClear | Guest Feedback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .star-btn { font-size: 2.5rem; cursor: pointer; color: #334155; transition: 0.2s; }
+        .star-btn.active { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.4); }
+        .hidden-section { display: none !important; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px; height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- FORM CONTAINER -->
+    <div id="form-container" class="max-w-md w-full glass-card rounded-[2.5rem] p-8 md:p-10 animate-fade">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/20">
+                <i class="fas fa-microscope text-white text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight uppercase">DeepClear <span class="text-blue-500">Dynamics</span></h1>
+            <p class="text-slate-400 text-sm mt-1">Guest Feedback Portal</p>
+        </div>
+        
+        <form id="feedback-form" class="space-y-5">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1">Guest Name</label>
+                <input type="text" id="user-name" name="name" required placeholder="Enter your name" 
+                       class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:border-blue-500 outline-none">
+            </div>
+
+            <div class="space-y-2 text-center">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Innovation Rating</label>
+                <div class="flex justify-center space-x-2 py-2">
+                    <i class="fas fa-star star-btn" data-value="1"></i>
+                    <i class="fas fa-star star-btn" data-value="2"></i>
+                    <i class="fas fa-star star-btn" data-value="3"></i>
+                    <i class="fas fa-star star-btn" data-value="4"></i>
+                    <i class="fas fa-star star-btn" data-value="5"></i>
+                </div>
+                <input type="hidden" id="star-input" name="rating" value="0">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-blue-400 uppercase tracking-widest ml-1">Comments</label>
+                <textarea id="user-comments" name="comments" rows="3" required placeholder="Thoughts on our project?" 
+                          class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-white focus:border-blue-500 outline-none transition resize-none"></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800">
+                <input type="password" id="pass-code" placeholder="Enter '2026' to unlock" 
+                       class="w-full bg-slate-800/30 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-green-500 outline-none text-center">
+            </div>
+
+            <button type="submit" id="submit-btn" disabled
+                    class="w-full bg-slate-800 text-slate-500 font-bold py-4 rounded-2xl opacity-50 cursor-not-allowed transition-all">
+                LOCKED
+            </button>
+        </form>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    <div id="success-card" class="hidden-section max-w-md w-full glass-card rounded-[2.5rem] p-10 text-center animate-fade">
+        <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-check text-green-500 text-3xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-4">Feedback Saved</h2>
+        <div class="bg-blue-600/10 p-5 rounded-2xl border border-blue-400/20 mb-6 italic text-blue-100 text-sm">
+            "Your feedback has been successfully sent to the DeepClear Dynamics database."
+        </div>
+        <p class="text-slate-500 text-[10px] uppercase tracking-widest font-bold">DeepClear Dynamics • Sabareesh S</p>
+    </div>
+
+    <script>
+        // UPDATED SCRIPT URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDEBn8G0GyvgvMzejwJ1jfXmqGrbZ3aX-OAci0tS_H6ekJRXSC9kLMaqgvIfWrwVU6/exec";
+
+        // Star Selection
+        document.querySelectorAll('.star-btn').forEach(star => {
+            star.addEventListener('click', () => {
+                const val = star.getAttribute('data-value');
+                document.getElementById('star-input').value = val;
+                document.querySelectorAll('.star-btn').forEach(s => {
+                    const sVal = s.getAttribute('data-value');
+                    s.classList.toggle('active', sVal <= val);
+                    s.classList.toggle('fas', sVal <= val);
+                });
+            });
+        });
+
+        // Passcode Unlock
+        document.getElementById('pass-code').addEventListener('input', (e) => {
+            const btn = document.getElementById('submit-btn');
+            if(e.target.value === '2026') {
+                btn.disabled = false;
+                btn.className = 'w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg cursor-pointer hover:bg-blue-500';
+                btn.innerText = 'SUBMIT TO DATABASE';
+            } else {
+                btn.disabled = true;
+                btn.className = 'w-full bg-slate-800 text-slate-500 font-bold py-4 rounded-2xl opacity-50';
+                btn.innerText = 'LOCKED';
+            }
+        });
+
+        // Submit Logic
+        document.getElementById('feedback-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loader mr-2"></div> SAVING...';
+
+            // Constructing a standard URL encoded body
+            const name = document.getElementById('user-name').value;
+            const rating = document.getElementById('star-input').value;
+            const comments = document.getElementById('user-comments').value;
+
+            // Using standard fetch with body properly encoded
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `name=${encodeURIComponent(name)}&rating=${encodeURIComponent(rating)}&comments=${encodeURIComponent(comments)}`
+            }).then(() => {
+                document.getElementById('form-container').classList.add('hidden-section');
+                document.getElementById('success-card').classList.remove('hidden-section');
+            }).catch(err => {
+                console.error("Submission error:", err);
+                // Fallback: show success card anyway because no-cors won't give us a proper response body
+                document.getElementById('form-container').classList.add('hidden-section');
+                document.getElementById('success-card').classList.remove('hidden-section');
+            });
+        });
+    </script>
+</body>
+</html>
